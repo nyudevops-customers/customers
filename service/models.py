@@ -107,14 +107,14 @@ class Customer(db.Model):
 
     @classmethod
     def find(cls, by_id):
-        """ Finds a Customer by it'scustomerid """
-        logger.info("Processing lookup forcustomer_id %s ...", by_id)
+        """ Finds a Customer by it's customer_id """
+        logger.info("Processing lookup for customer_id %s ...", by_id)
         return cls.query.get(by_id)
 
     @classmethod
     def find_or_404(cls, by_id):
-        """ Find a Customer by it'scustomer_id """
-        logger.info("Processing lookup or 404 forcustomer_id %s ...", by_id)
+        """ Find a Customer by it's customer_id """
+        logger.info("Processing lookup or 404 for customer_id %s ...", by_id)
         return cls.query.get_or_404(by_id)
 
     @classmethod
