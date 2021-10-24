@@ -62,7 +62,7 @@ class Customer(db.Model):
 
     def serialize(self):
         """ Serializes a Customer into a dictionary """
-        return {"id": self.customer_id, "firstname": self.firstname, "lastname": self.lastname,
+        return {"customer_id": self.customer_id, "firstname": self.firstname, "lastname": self.lastname,
         "email_id": self.email_id, "address": self.address, "phone_number": self.phone_number,"card_number":self.card_number}
 
     def deserialize(self, data):
@@ -75,10 +75,14 @@ class Customer(db.Model):
         try:
             self.firstname = data["firstname"]
             self.lastname = data["lastname"]
-            self.email_id = data["email_id"]
             self.address = data["address"]
             self.phone_number = data["phone_number"]
             self.card_number = data["card_number"]
+            self.email_id = data["email_id"]
+        except AttributeError as error:
+            raise DataValidationError(
+                "Invalid attribute: " + error.args[0]
+            )
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Customer: missing " + error.args[0]
