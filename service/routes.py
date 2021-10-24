@@ -31,13 +31,23 @@ def index():
     )
 
 @app.route("/customers/<int:customer_id>", methods=["GET"])
-def get_customers(customer_id):
+def get_customers_byid(customer_id):
     """
     Retrieve a single Customer
     This endpoint will return a Customer based on it's id
     """
     app.logger.info("Request for Customer with id: %s", customer_id)
-    customer = Customer.find_or_404(customer_id)
+    customer = Customer.find_or_404_int(customer_id)
+    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+
+@app.route("/customers/<str:email_id>", methods=["GET"])
+def get_customers_byemail(email_id):
+    """
+    Retrieve a single Customer with the requested email ID
+    This endpoint will return a Customer based on it's email_id
+    """
+    app.logger.info("Request for Customer with id: %s", email_id)
+    customer = Customer.find_or_404_str(email_id)
     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
 
 

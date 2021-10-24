@@ -15,4 +15,4 @@ class CustomerFactory(factory.Factory):
     email_id = factory.Faker("email")
     address = factory.Faker("address")
     phone_number = factory.Faker("phone_number")
-    card_number = factory.Faker("name")
+    card_number = factory.Faker("phone_number")
