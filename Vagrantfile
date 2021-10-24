@@ -10,7 +10,7 @@ Vagrant.configure(2) do |config|
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "bento/ubuntu-21.04"
   config.vm.hostname = "ubuntu"
-
+  config.vm.boot_timeout = 1500
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.network "forwarded_port", guest: 5000, host: 5000, host_ip: "127.0.0.1"

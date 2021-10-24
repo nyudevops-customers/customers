@@ -135,3 +135,41 @@ class TestCustomerServer(TestCase):
        """Create a Customer with no content type"""
        resp = self.app.post(BASE_URL)
        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_get_customer_byid(self):
+        """ Get a single Customer """
+        # get the id of a customer
+        test_customer = self._create_customers(1)[0]
+        resp = self.app.get(
+            "{0}/{1}".format(BASE_URL, test_customer.customer_id), content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["firstname"], test_customer.firstname)
+        self.assertEqual(data["lastname"], test_customer.lastname)
+        self.assertEqual(data["email_id"], test_customer.email_id)
+        self.assertEqual(data["address"], test_customer.address)
+        self.assertEqual(data["phone_number"], test_customer.phone_number)
+        self.assertEqual(data["card_number"], test_customer.card_number)
+
+    def test_get_email_id(self):
+        """ Get a single Customer """
+        # get the id of a customer
+        test_customer = self._create_customers(1)[0]
+        resp = self.app.get(
+            "{0}/{1}".format(BASE_URL, test_customer.customer_id), content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["customer_id"], test_customer.customer_id)
+        self.assertEqual(data["firstname"], test_customer.firstname)
+        self.assertEqual(data["lastname"], test_customer.lastname)
+        self.assertEqual(data["address"], test_customer.address)
+        self.assertEqual(data["phone_number"], test_customer.phone_number)
+        self.assertEqual(data["card_number"], test_customer.card_number)
+
+
+    def test_get_customer_not_found(self):
+        """ Get a Customers thats not found """
+        resp = self.app.get("{}/0".format(BASE_URL))
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)

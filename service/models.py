@@ -110,23 +110,57 @@ class Customer(db.Model):
         return cls.query.all()
 
     @classmethod
-    def find(cls, by_id):
+    def find(cls, customer_id):
         """ Finds a Customer by it's customer_id """
-        logger.info("Processing lookup for customer_id %s ...", by_id)
-        return cls.query.get(by_id)
+        logger.info("Processing lookup for customer_id %s ...", customer_id)
+        return cls.query.get(customer_id)
 
     @classmethod
-    def find_or_404(cls, by_id):
+    def find_or_404_int(cls, customer_id):
         """ Find a Customer by it's customer_id """
-        logger.info("Processing lookup or 404 for customer_id %s ...", by_id)
-        return cls.query.get_or_404(by_id)
+        logger.info("Processing lookup or 404 for customer_id %s ...", customer_id)
+        return cls.query.get_or_404(customer_id)
+        
+    @classmethod
+    def find_or_404_str(cls, id):
+        """ Find a Customer by it's email_id """
+        logger.info("Processing lookup or 404 for email_id  %s ...", id)
+        return cls.query.get_or_404(id)
 
     @classmethod
-    def find_by_name(cls, firstname):
-        """Returns all Customers with the given name
+    def find_by_firstname(cls, firstname):
+        """Returns all Customers with the given firstname
 
         Args:
             name (string): the name of the Customers you want to match
         """
-        logger.info("Processing name query for %s ...", firstname)
-        return cls.query.filter(cls.name == firstname)
+        logger.info("Processing name query for %s  ...", firstname)
+        return cls.query.filter(cls.firstname == firstname)
+
+    @classmethod
+    def find_by_lastname(cls, lastname):
+        """Returns all Customers with the given lastname
+
+        Args:
+            name (string): the name of the Customers you want to match
+        """
+        logger.info("Processing name query for %s  ...", lastname)
+        return cls.query.filter(cls.lastname == lastname) 
+    @classmethod
+    def find_by_emailID(cls, email_id):
+        """Returns all Customers with the given Email ID
+
+        Args:
+            name (string): the name of the Customers you want to match
+        """
+        logger.info("Processing name query for %s  ...", email_id)
+        return cls.query.filter(cls.email_id == email_id) 
+    @classmethod
+    def find_by_phone_number(cls, phone_number):
+        """Returns all Customers with the given phone number
+
+        Args:
+            name (string): the name of the Customers you want to match
+        """
+        logger.info("Processing name query for %s  ...", phone_number)
+        return cls.query.filter(cls.phone_number == phone_number) 

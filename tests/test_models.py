@@ -5,6 +5,8 @@ Test cases for Customer Model
 import logging
 import unittest
 import os
+
+from werkzeug.exceptions import NotFound
 from service.models import Customer, DataValidationError, db
 from service import app
 from .factories import CustomerFactory
@@ -103,16 +105,92 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.card_number, "456")
 
 
-    def test_deserialize_missing_data(self):
-        """Test deserialization of a Customer with missing data"""
-        data = {"customer_id": 1, "firstname": "Tom"}
-        customer = Customer()
-        self.assertRaises(DataValidationError, customer.deserialize, data)
+    def test_find_customer(self):
+        """ Find a customer by ID """
+        customers = CustomerFactory.create_batch(3)
+        for customer in customers:
+            customer.create()
+        logging.debug(customers)
+        # make sure they got updated
+        self.assertEqual(len(Customer.all()), 3)
+        # find the 2nd customer in the list
+        customer = Customer.find(customers[1].customer_id)
+        self.assertIsNot(customer, None)
+        self.assertEqual(customer.customer_id, customers[1].customer_id)
+        self.assertEqual(customer.firstname, customers[1].firstname)
+        self.assertEqual(customer.lastname, customers[1].lastname)
+        self.assertEqual(customer.email_id, customers[1].email_id)
+        self.assertEqual(customer.address, customers[1].address)
+        self.assertEqual(customer.phone_number, customers[1].phone_number)
+        self.assertEqual(customer.card_number, customers[1].card_number)
 
+
+    def test_find_by_firstname(self):
+        """ Find a Customer by FirstName """
+        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893").create()
+        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893").create()
+        customers = Customer.find_by_firstname("Jane")
+        self.assertEqual(customers[0].lastname,"Doe")
+        self.assertEqual(customers[0].email_id,"jnd@xyz.com")
+        self.assertEqual(customers[0].address,"102 XYZ St, Apt 98, Tx")
+        self.assertEqual(customers[0].phone_number,"200988884")
+        self.assertEqual(customers[0].card_number,"48097572893")
+
+    def test_find_by_lastname(self):
+        """ Find a Customer by LastName """
+        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893").create()
+        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893").create()
+        customers = Customer.find_by_lastname("Doe")
+        self.assertEqual(customers[0].firstname,"John")
+        self.assertEqual(customers[0].email_id,"jd@xyz.com")
+        self.assertEqual(customers[0].address,"102 Mercer St, Apt 8, NY")
+        self.assertEqual(customers[0].phone_number,"200987634")
+        self.assertEqual(customers[0].card_number,"489372893")
+        self.assertEqual(customers[1].firstname,"Jane")
+        self.assertEqual(customers[1].email_id,"jnd@xyz.com")
+        self.assertEqual(customers[1].address,"102 XYZ St, Apt 98, Tx")
+        self.assertEqual(customers[1].phone_number,"200988884")
+        self.assertEqual(customers[1].card_number,"48097572893")
     
-    def test_deserialize_bad_data(self):
-        """Test deserialization of bad data"""
-        data = "this is not a dictionary"
-        customer = Customer()
-        self.assertRaises(DataValidationError, customer.deserialize, data)
+    def test_find_by_email_id(self):
+        """ Find a Customer by Email ID """
+        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893").create()
+        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893").create()
+        customers = Customer.find_by_emailID("jd@xyz.com")
+        self.assertEqual(customers[0].firstname,"John")
+        self.assertEqual(customers[0].lastname,"Doe")
+        self.assertEqual(customers[0].address,"102 Mercer St, Apt 8, NY")
+        self.assertEqual(customers[0].phone_number,"200987634")
+        self.assertEqual(customers[0].card_number,"489372893")
 
+    def test_find_by_phone_number(self):
+        """ Find a Customer by Phone Number """
+        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893").create()
+        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893").create()
+        customers = Customer.find_by_phone_number("200987634")
+        self.assertEqual(customers[0].firstname,"John")
+        self.assertEqual(customers[0].lastname,"Doe")
+        self.assertEqual(customers[0].email_id,"jd@xyz.com")
+        self.assertEqual(customers[0].address,"102 Mercer St, Apt 8, NY")
+        self.assertEqual(customers[0].card_number,"489372893")
+
+    def test_find_or_404_found(self):
+        """ Find or return 404 found """
+        customers = CustomerFactory.create_batch(3)
+        for customer in customers:
+            customer.create()
+
+        customer = Customer.find_or_404_int(customers[1].customer_id)
+        self.assertIsNot(customer, None)
+        self.assertEqual(customer.customer_id, customers[1].customer_id)
+        self.assertEqual(customer.firstname, customers[1].firstname)
+        self.assertEqual(customer.lastname, customers[1].lastname)
+        self.assertEqual(customer.email_id, customers[1].email_id)
+        self.assertEqual(customer.address, customers[1].address)
+        self.assertEqual(customer.phone_number, customers[1].phone_number)
+        self.assertEqual(customer.card_number, customers[1].card_number)
+
+
+    def test_find_or_404_not_found(self):
+        """ Find or return 404 NOT found """
+        self.assertRaises(NotFound, Customer.find_or_404_int, 0)
