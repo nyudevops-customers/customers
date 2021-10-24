@@ -40,7 +40,7 @@ def get_customers_byid(customer_id):
     customer = Customer.find_or_404_int(customer_id)
     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
 
-@app.route("/customers/<str:email_id>", methods=["GET"])
+@app.route("/customers/<string:email_id>", methods=["GET"])
 def get_customers_byemail(email_id):
     """
     Retrieve a single Customer with the requested email ID
@@ -63,7 +63,7 @@ def create_customers():
     customer.deserialize(request.get_json())
     customer.create()
     message = customer.serialize()
-    location_url = url_for("get_customers", customer_id=customer.customer_id, _external=True)
+    location_url = url_for("get_customers_byid", customer_id=customer.customer_id, _external=True)
 
     app.logger.info("Customer with ID [%s] created.", customer.customer_id)
     return make_response(

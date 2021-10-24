@@ -110,25 +110,25 @@ class Customer(db.Model):
         return cls.query.all()
 
     @classmethod
-    def find(cls, customer_id:int):
+    def find(cls, customer_id):
         """ Finds a Customer by it's customer_id """
         logger.info("Processing lookup for customer_id %s ...", customer_id)
         return cls.query.get(customer_id)
 
     @classmethod
-    def find_or_404_int(cls, customer_id:int):
+    def find_or_404_int(cls, customer_id):
         """ Find a Customer by it's customer_id """
         logger.info("Processing lookup or 404 for customer_id %s ...", customer_id)
         return cls.query.get_or_404(customer_id)
         
     @classmethod
-    def find_or_404_str(cls, id:str):
+    def find_or_404_str(cls, id):
         """ Find a Customer by it's email_id """
         logger.info("Processing lookup or 404 for email_id  %s ...", id)
         return cls.query.get_or_404(id)
 
     @classmethod
-    def find_by_firstname(cls, firstname:str):
+    def find_by_firstname(cls, firstname):
         """Returns all Customers with the given firstname
 
         Args:
@@ -138,7 +138,7 @@ class Customer(db.Model):
         return cls.query.filter(cls.firstname == firstname)
 
     @classmethod
-    def find_by_lastname(cls, lastname:str):
+    def find_by_lastname(cls, lastname):
         """Returns all Customers with the given lastname
 
         Args:
@@ -147,7 +147,7 @@ class Customer(db.Model):
         logger.info("Processing name query for %s  ...", lastname)
         return cls.query.filter(cls.lastname == lastname) 
     @classmethod
-    def find_by_emailID(cls, email_id:str):
+    def find_by_emailID(cls, email_id):
         """Returns all Customers with the given Email ID
 
         Args:
@@ -156,7 +156,7 @@ class Customer(db.Model):
         logger.info("Processing name query for %s  ...", email_id)
         return cls.query.filter(cls.email_id == email_id) 
     @classmethod
-    def find_by_phone_number(cls, phone_number:str):
+    def find_by_phone_number(cls, phone_number):
         """Returns all Customers with the given phone number
 
         Args:

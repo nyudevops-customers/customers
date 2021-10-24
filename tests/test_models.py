@@ -114,7 +114,7 @@ class TestCustomer(unittest.TestCase):
         # make sure they got updated
         self.assertEqual(len(Customer.all()), 3)
         # find the 2nd customer in the list
-        customer = Customer.find(customers[1].id)
+        customer = Customer.find(customers[1].customer_id)
         self.assertIsNot(customer, None)
         self.assertEqual(customer.customer_id, customers[1].customer_id)
         self.assertEqual(customer.firstname, customers[1].firstname)
@@ -156,7 +156,7 @@ class TestCustomer(unittest.TestCase):
         """ Find a Customer by Email ID """
         Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893").create()
         Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893").create()
-        customers = Customer.find_by_email_id("jd@xyz.com")
+        customers = Customer.find_by_emailID("jd@xyz.com")
         self.assertEqual(customers[0].firstname,"John")
         self.assertEqual(customers[0].lastname,"Doe")
         self.assertEqual(customers[0].address,"102 Mercer St, Apt 8, NY")
