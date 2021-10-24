@@ -75,10 +75,14 @@ class Customer(db.Model):
         try:
             self.firstname = data["firstname"]
             self.lastname = data["lastname"]
-            self.email_id = data["email_id"]
             self.address = data["address"]
             self.phone_number = data["phone_number"]
             self.card_number = data["card_number"]
+            self.email_id = data["email_id"]
+        except AttributeError as error:
+            raise DataValidationError(
+                "Invalid attribute: " + error.args[0]
+            )
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Customer: missing " + error.args[0]
