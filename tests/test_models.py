@@ -47,12 +47,12 @@ class TestCustomer(unittest.TestCase):
 
     def test_create_a_customer(self):
         """ Test something """
-        customer = Customer(firstname="Tom", lastname="Steven", email_id="123", address="110 street", phone_number="123", card_number="456")
+        customer = Customer(firstname="Tom", lastname="Steven", email_id="123@gmail.com", address="110 street", phone_number="123", card_number="456")
         self.assertTrue(customer != None)
         self.assertEqual(customer.customer_id, None)
         self.assertEqual(customer.firstname, "Tom")
         self.assertEqual(customer.lastname, "Steven")
-        self.assertEqual(customer.email_id, "123")
+        self.assertEqual(customer.email_id, "123@gmail.com")
         self.assertEqual(customer.address, "110 street")
         self.assertEqual(customer.phone_number, "123")
         self.assertEqual(customer.card_number, "456")

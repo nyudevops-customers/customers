@@ -26,7 +26,7 @@ CONTENT_TYPE_JSON = "application/json"
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
-class TestYourResourceServer(TestCase):
+class TestCustomerServer(TestCase):
     """ REST API Server Tests """
 
     @classmethod
