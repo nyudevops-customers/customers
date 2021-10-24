@@ -62,7 +62,7 @@ class Customer(db.Model):
 
     def serialize(self):
         """ Serializes a Customer into a dictionary """
-        return {"id": self.customer_id, "firstname": self.firstname, "lastname": self.lastname,
+        return {"customer_id": self.customer_id, "firstname": self.firstname, "lastname": self.lastname,
         "email_id": self.email_id, "address": self.address, "phone_number": self.phone_number,"card_number":self.card_number}
 
     def deserialize(self, data):
