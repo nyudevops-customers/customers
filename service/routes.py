@@ -30,6 +30,42 @@ def index():
         status.HTTP_200_OK,
     )
 
+
+
+@app.route("/customers", methods=["GET"])
+def get_customers_by_values():
+    """
+    Retrieve a single Customer with the requested values
+    """
+
+    args= request.args.to_dict()
+
+    if "email_id" in args:
+        app.logger.info("Request for Customer with id: %s", ["email_id"])
+        customer = Customer.find_by_emailID(args["email_id"]).first()
+        return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+    
+    elif "firstname" in args:
+        app.logger.info("Request for Customer with firstname: %s", args["firstname"])
+        customer = Customer.find_by_firstname(args["firstname"]).first()
+        return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+        
+    elif "lastname" in args:
+        app.logger.info("Request for Customer with lastname: %s", args["lastname"])
+        customer = Customer.find_by_lastname(args["lastname"]).first()
+        return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+    
+    elif "phone_number" in args:
+        app.logger.info("Request for Customer with phone_number: %s", args["phone_number"])
+        customer = Customer.find_by_phone_number(args["phone_number"]).first()
+        return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+    
+    else:
+        app.logger.info("Request for all customers")
+        customer = Customer.all()
+        customer_list = [x.serialize() for x in customer]
+        return make_response(jsonify(customer_list), status.HTTP_200_OK)
+
 @app.route("/customers/<int:customer_id>", methods=["GET"])
 def get_customers_byid(customer_id):
     """
@@ -39,16 +75,9 @@ def get_customers_byid(customer_id):
     app.logger.info("Request for Customer with id: %s", customer_id)
     customer = Customer.find_or_404_int(customer_id)
     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+    
 
-@app.route("/customers/<string:email_id>", methods=["GET"])
-def get_customers_byemail(email_id):
-    """
-    Retrieve a single Customer with the requested email ID
-    This endpoint will return a Customer based on it's email_id
-    """
-    app.logger.info("Request for Customer with id: %s", email_id)
-    customer = Customer.find_or_404_str(email_id)
-    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+
 
 
 @app.route("/customers", methods=["POST"])
@@ -69,6 +98,26 @@ def create_customers():
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
+
+
+
+
+#######################
+# UPDATE Customer
+####################### 
+@app.route("/customers/<int:customer_id>", methods = ["PUT"])
+def update_customers(customer_id):
+
+    app.logger.info("Requesting to update a customer")
+    check_content_type("application/json")
+    customer = Customer.find_or_404_int(customer_id)
+    
+    customer.deserialize(request.get_json())
+    customer.customer_id = customer_id
+    customer.update()
+    app.logger.info("Updated customer with id %s", customer.customer_id)
+    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

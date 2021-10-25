@@ -47,11 +47,10 @@ class Customer(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def save(self):
-        """
-        Updates a Customer to the database
-        """
-        logger.info("Saving %s %s", self.firstname, self.lastname)
+    def update(self):
+
+        if not self.customer_id:
+            raise DataValidationError("No fields provided to update")
         db.session.commit()
 
     def delete(self):
@@ -134,7 +133,7 @@ class Customer(db.Model):
         Args:
             name (string): the name of the Customers you want to match
         """
-        logger.info("Processing name query for %s  ...", firstname)
+        logger.info("Processing first name query for %s  ...", firstname)
         return cls.query.filter(cls.firstname == firstname)
 
     @classmethod
@@ -144,8 +143,9 @@ class Customer(db.Model):
         Args:
             name (string): the name of the Customers you want to match
         """
-        logger.info("Processing name query for %s  ...", lastname)
+        logger.info("Processing last name query for %s  ...", lastname)
         return cls.query.filter(cls.lastname == lastname) 
+
     @classmethod
     def find_by_emailID(cls, email_id):
         """Returns all Customers with the given Email ID
@@ -155,6 +155,7 @@ class Customer(db.Model):
         """
         logger.info("Processing name query for %s  ...", email_id)
         return cls.query.filter(cls.email_id == email_id) 
+        
     @classmethod
     def find_by_phone_number(cls, phone_number):
         """Returns all Customers with the given phone number

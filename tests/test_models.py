@@ -105,6 +105,14 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.card_number, "456")
 
 
+    def test_list_all(self):
+        """Test case to list all customers"""
+        customers = CustomerFactory.create_batch(3)
+        for customer in customers:
+            customer.create()
+        self.assertEqual(len(Customer.all()), 3)
+        
+
     def test_find_customer(self):
         """ Find a customer by ID """
         customers = CustomerFactory.create_batch(3)
@@ -194,3 +202,20 @@ class TestCustomer(unittest.TestCase):
     def test_find_or_404_not_found(self):
         """ Find or return 404 NOT found """
         self.assertRaises(NotFound, Customer.find_or_404_int, 0)
+
+
+    def test_update_a_customer(self):
+        """Update or return 404 NOT FOUND"""
+
+        test_customer = Customer(firstname="Dev", lastname="Lincoln", email_id="dldl@xyz.com", address="22nd St. X Ave, N.Y.", phone_number="123456789", card_number="1615141312109988")
+        test_customer.create()
+
+        self.assertEqual(test_customer.customer_id, 1)
+
+        test_customer.phone_number = "987654321"
+        test_customer.update()
+
+        cust = Customer.find(1)
+        self.assertEqual(cust.phone_number, "987654321")
+
+
