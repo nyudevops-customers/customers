@@ -9,8 +9,11 @@ import os
 import logging
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
+
+from flask.json import jsonify
+from werkzeug.datastructures import ContentRange
 from service import status  # HTTP Status Codes
-from service.models import db
+from service.models import Customer, db
 from service.routes import app, init_db
 from .factories import CustomerFactory
 
@@ -126,18 +129,18 @@ class TestCustomerServer(TestCase):
         )
 
     def test_create_customer_no_data(self):
-       """Create a Customer with missing data"""
-       resp = self.app.post(BASE_URL, json={}, content_type=CONTENT_TYPE_JSON)
-       self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+        """Create a Customer with missing data"""
+        resp = self.app.post(BASE_URL, json={}, content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
     
 
     def test_create_customer_no_content_type(self):
-       """Create a Customer with no content type"""
-       resp = self.app.post(BASE_URL)
-       self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+        """Create a Customer with no content type"""
+        resp = self.app.post(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     def test_get_customer_byid(self):
-        """ Get a single Customer """
+        """ Get a single Customer by id """
         # get the id of a customer
         test_customer = self._create_customers(1)[0]
         resp = self.app.get(
@@ -152,12 +155,12 @@ class TestCustomerServer(TestCase):
         self.assertEqual(data["phone_number"], test_customer.phone_number)
         self.assertEqual(data["card_number"], test_customer.card_number)
 
-    def test_get_email_id(self):
-        """ Get a single Customer """
+    def test_get_customer_by_email(self):
+        """ Get a single Customer by email """
         # get the id of a customer
         test_customer = self._create_customers(1)[0]
         resp = self.app.get(
-            "{0}/{1}".format(BASE_URL, test_customer.customer_id), content_type="application/json"
+            "{0}/search?email_id={1}".format(BASE_URL, test_customer.email_id), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -168,8 +171,85 @@ class TestCustomerServer(TestCase):
         self.assertEqual(data["phone_number"], test_customer.phone_number)
         self.assertEqual(data["card_number"], test_customer.card_number)
 
+    def test_get_customer_by_firstname(self):
+        """ Get a single Customer firstname"""
+        # get the id of a customer
+        test_customer = self._create_customers(1)[0]
+        resp = self.app.get(
+            "{0}/search?firstname={1}".format(BASE_URL, test_customer.firstname), content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["customer_id"], test_customer.customer_id)
+        self.assertEqual(data["email_id"], test_customer.email_id)
+        self.assertEqual(data["lastname"], test_customer.lastname)
+        self.assertEqual(data["address"], test_customer.address)
+        self.assertEqual(data["phone_number"], test_customer.phone_number)
+        self.assertEqual(data["card_number"], test_customer.card_number)
+
+    def test_get_customer_by_lastname(self):
+        """ Get a single Customer lastname"""
+        # get the id of a customer
+        test_customer = self._create_customers(1)[0]
+        resp = self.app.get(
+            "{0}/search?lastname={1}".format(BASE_URL, test_customer.lastname), content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["customer_id"], test_customer.customer_id)
+        self.assertEqual(data["firstname"], test_customer.firstname)
+        self.assertEqual(data["email_id"], test_customer.email_id)
+        self.assertEqual(data["address"], test_customer.address)
+        self.assertEqual(data["phone_number"], test_customer.phone_number)
+        self.assertEqual(data["card_number"], test_customer.card_number)
+    
+
+    def test_get_customer_by_phone_number(self):
+        """ Get a single Customer phone number"""
+        # get the id of a customer
+        test_customer = self._create_customers(1)[0]
+        resp = self.app.get(
+            "{0}/search?phone_number={1}".format(BASE_URL, test_customer.phone_number), content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["customer_id"], test_customer.customer_id)
+        self.assertEqual(data["firstname"], test_customer.firstname)
+        self.assertEqual(data["lastname"], test_customer.lastname)
+        self.assertEqual(data["address"], test_customer.address)
+        self.assertEqual(data["email_id"], test_customer.email_id)
+        self.assertEqual(data["card_number"], test_customer.card_number)
+    
+
 
     def test_get_customer_not_found(self):
         """ Get a Customers thats not found """
         resp = self.app.get("{}/0".format(BASE_URL))
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+
+    def test_update(self):
+        """Update a customer's phone number"""
+
+        random_customers = CustomerFactory()
+        resp = self.app.post(
+            BASE_URL, json=random_customers.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        
+        new_customer = resp.get_json()
+        new_customer["phone_number"] = "5555511111"
+
+        resp = self.app.put("/customers/{}".format(new_customer["customer_id"]), json = new_customer, content_type = CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        updated_customer  = resp.get_json()
+        self.assertEqual(new_customer["customer_id"],updated_customer["customer_id"])
+        self.assertEqual(new_customer["phone_number"], updated_customer["phone_number"])
+
+
+
+
+
+        
+        
