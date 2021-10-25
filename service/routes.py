@@ -30,18 +30,9 @@ def index():
         status.HTTP_200_OK,
     )
 
-@app.route("/customers/<int:customer_id>", methods=["GET"])
-def get_customers_byid(customer_id):
-    """
-    Retrieve a single Customer
-    This endpoint will return a Customer based on it's id
-    """
-    app.logger.info("Request for Customer with id: %s", customer_id)
-    customer = Customer.find_or_404_int(customer_id)
-    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
-    
 
-@app.route("/customers/search", methods=["GET"])
+
+@app.route("/customers", methods=["GET"])
 def get_customers_by_values():
     """
     Retrieve a single Customer with the requested values
@@ -70,7 +61,23 @@ def get_customers_by_values():
         return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
     
     else:
-        return make_response(status.HTTP_206_PARTIAL_CONTENT)
+        app.logger.info("Request for all customers")
+        customer = Customer.all()
+        customer_list = [x.serialize() for x in customer]
+        return make_response(jsonify(customer_list), status.HTTP_200_OK)
+
+@app.route("/customers/<int:customer_id>", methods=["GET"])
+def get_customers_byid(customer_id):
+    """
+    Retrieve a single Customer
+    This endpoint will return a Customer based on it's id
+    """
+    app.logger.info("Request for Customer with id: %s", customer_id)
+    customer = Customer.find_or_404_int(customer_id)
+    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+    
+
+
 
 
 @app.route("/customers", methods=["POST"])

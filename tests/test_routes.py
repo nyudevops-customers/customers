@@ -139,6 +139,16 @@ class TestCustomerServer(TestCase):
         resp = self.app.post(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
+
+    def test_get_all(self):
+        """Get all customers"""
+        self._create_customers(3)
+        res = self.app.get(BASE_URL)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        res_data = res.get_json()
+        self.assertEqual(len(res_data),3)
+
+
     def test_get_customer_byid(self):
         """ Get a single Customer by id """
         # get the id of a customer
@@ -160,7 +170,7 @@ class TestCustomerServer(TestCase):
         # get the id of a customer
         test_customer = self._create_customers(1)[0]
         resp = self.app.get(
-            "{0}/search?email_id={1}".format(BASE_URL, test_customer.email_id), content_type="application/json"
+            "{0}?email_id={1}".format(BASE_URL, test_customer.email_id), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -176,7 +186,7 @@ class TestCustomerServer(TestCase):
         # get the id of a customer
         test_customer = self._create_customers(1)[0]
         resp = self.app.get(
-            "{0}/search?firstname={1}".format(BASE_URL, test_customer.firstname), content_type="application/json"
+            "{0}?firstname={1}".format(BASE_URL, test_customer.firstname), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -192,7 +202,7 @@ class TestCustomerServer(TestCase):
         # get the id of a customer
         test_customer = self._create_customers(1)[0]
         resp = self.app.get(
-            "{0}/search?lastname={1}".format(BASE_URL, test_customer.lastname), content_type="application/json"
+            "{0}?lastname={1}".format(BASE_URL, test_customer.lastname), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -209,7 +219,7 @@ class TestCustomerServer(TestCase):
         # get the id of a customer
         test_customer = self._create_customers(1)[0]
         resp = self.app.get(
-            "{0}/search?phone_number={1}".format(BASE_URL, test_customer.phone_number), content_type="application/json"
+            "{0}?phone_number={1}".format(BASE_URL, test_customer.phone_number), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()

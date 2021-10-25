@@ -105,6 +105,14 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.card_number, "456")
 
 
+    def test_list_all(self):
+        """Test case to list all customers"""
+        customers = CustomerFactory.create_batch(3)
+        for customer in customers:
+            customer.create()
+        self.assertEqual(len(Customer.all()), 3)
+        
+
     def test_find_customer(self):
         """ Find a customer by ID """
         customers = CustomerFactory.create_batch(3)
