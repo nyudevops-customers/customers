@@ -109,6 +109,13 @@ class Customer(db.Model):
         return cls.query.all()
 
     @classmethod
+    def remove_all(cls):
+        """ Removes all customers from the database (use for testing)  """
+        for customer in cls.query.all():
+            db.session.delete(customer)
+        db.session.commit()
+
+    @classmethod
     def find(cls, customer_id):
         """ Finds a Customer by it's customer_id """
         logger.info("Processing lookup for customer_id %s ...", customer_id)

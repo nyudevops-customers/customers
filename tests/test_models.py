@@ -218,4 +218,23 @@ class TestCustomer(unittest.TestCase):
         cust = Customer.find(1)
         self.assertEqual(cust.phone_number, "987654321")
 
+    def test_delete_customer(self):
+        """ Delete a Customer """
+        customer = CustomerFactory()
+        customer.create()
+        self.assertEqual(len(Customer.all()), 1)
+        # delete the pet and make sure it isn't in the database
+        customer.delete()
+        self.assertEqual(len(Customer.all()), 0)
+    
+    def test_remove_all_customers(self):
+        """ Remove all customers """
+        customers = CustomerFactory.create_batch(3)
+        for customer in customers:
+            customer.create()
+        self.assertEqual(len(Customer.all()), 3) 
+        customer.remove_all()
+        all_customers = Customer.all()
+        self.assertEquals(len(all_customers), 0)
+
 
