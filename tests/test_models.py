@@ -51,15 +51,15 @@ class TestCustomer(unittest.TestCase):
 
     def test_create_a_customer(self):
         """ Test something """
-        customer = Customer(firstname="Tom", lastname="Steven", email_id="123@gmail.com", address="110 street", phone_number="123", card_number="456")
+        customer = Customer(firstname="Tom", lastname="Steven", email_id="123@gmail.com", address="102 XYZ St, Apt 98, Tx", phone_number="200988884", card_number="48097572893")
         self.assertTrue(customer != None)
         self.assertEqual(customer.customer_id, None)
         self.assertEqual(customer.firstname, "Tom")
         self.assertEqual(customer.lastname, "Steven")
         self.assertEqual(customer.email_id, "123@gmail.com")
-        self.assertEqual(customer.address, "110 street")
-        self.assertEqual(customer.phone_number, "123")
-        self.assertEqual(customer.card_number, "456")
+        self.assertEqual(customer.address, "102 XYZ St, Apt 98, Tx")
+        self.assertEqual(customer.phone_number, "200988884")
+        self.assertEqual(customer.card_number, "48097572893")
 
 
     def test_serialize_a_customer(self):
@@ -90,9 +90,9 @@ class TestCustomer(unittest.TestCase):
             "firstname": "Tom",
             "lastname": "Steven",
             "email_id": "123@gmail.com",
-            "address": "110 street",
-            "phone_number": "123",
-            "card_number": "456",
+            "address": "102 XYZ St, Apt 98, Tx",
+            "phone_number": "200988884",
+            "card_number": "48097572893",
         }
         customer = Customer()
         customer.deserialize(data)
@@ -101,9 +101,9 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.firstname, "Tom")
         self.assertEqual(customer.lastname, "Steven")
         self.assertEqual(customer.email_id, "123@gmail.com")
-        self.assertEqual(customer.address, "110 street")
-        self.assertEqual(customer.phone_number, "123")
-        self.assertEqual(customer.card_number, "456")
+        self.assertEqual(customer.address, "102 XYZ St, Apt 98, Tx")
+        self.assertEqual(customer.phone_number, "200988884")
+        self.assertEqual(customer.card_number, "48097572893")
 
     def test_deserialize_with_type_error(self):
         """ Deserialize a Customer with a TypeError """
@@ -266,9 +266,9 @@ class TestCustomer(unittest.TestCase):
             "firstname": "Tom",
             "lastname": "Steven",
             "email_id": "123@gmail.com",
-            "address": "110 street",
-            "phone_number": "123",
-            "card_number": "456",
+            "address": "102 Mercer St, Apt 8, NY",
+            "phone_number": "200987634",
+            "card_number": "489372893",
         }
 
         cust.deserialize(data)
