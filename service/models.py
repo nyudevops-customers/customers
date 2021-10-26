@@ -127,11 +127,11 @@ class Customer(db.Model):
         logger.info("Processing lookup or 404 for customer_id %s ...", customer_id)
         return cls.query.get_or_404(customer_id)
         
-    @classmethod
-    def find_or_404_str(cls, id):
-        """ Find a Customer by it's email_id """
-        logger.info("Processing lookup or 404 for email_id  %s ...", id)
-        return cls.query.get_or_404(id)
+    # @classmethod
+    # def find_or_404_str(cls, id):
+    #     """ Find a Customer by it's email_id """
+    #     logger.info("Processing lookup or 404 for email_id  %s ...", id)
+    #     return cls.query.get_or_404(id)
 
     @classmethod
     def find_by_firstname(cls, firstname):
