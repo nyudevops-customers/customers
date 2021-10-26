@@ -35,7 +35,7 @@ class Customer(db.Model):
     card_number = db.Column(db.String(32), nullable=True)
 
     def __repr__(self):
-        return "<customer_id=[%s] Firstname %r Lastname %r  email_id %r address %r phone_number %r card_number %r>" % (self.customer_id, self.firstname, self.lastname,
+        return "<customer_id=[{}] Firstname {} Lastname {} email_id {} address {} phone_number {} card_number {}>".format(self.customer_id, self.firstname, self.lastname,
         self.email_id, self.address, self.phone_number, self.card_number)
 
     def create(self):
