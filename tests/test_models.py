@@ -104,6 +104,15 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.phone_number, "123")
         self.assertEqual(customer.card_number, "456")
 
+    def test_deserialize_with_type_error(self):
+        """ Deserialize a Customer with a TypeError """
+        customer = Customer()
+        self.assertRaises(DataValidationError, customer.deserialize, [])
+
+    def test_deserialize_with_key_error(self):
+        """ Deserialize a Customer with a KeyError """
+        customer = Customer()
+        self.assertRaises(DataValidationError, customer.deserialize, {})
 
     def test_list_all(self):
         """Test case to list all customers"""
