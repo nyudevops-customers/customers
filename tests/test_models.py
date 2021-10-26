@@ -10,6 +10,7 @@ from werkzeug.exceptions import NotFound
 from service.models import Customer, DataValidationError, db
 from service import app
 from .factories import CustomerFactory
+from flask import jsonify
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")
@@ -246,4 +247,31 @@ class TestCustomer(unittest.TestCase):
         all_customers = Customer.all()
         self.assertEquals(len(all_customers), 0)
 
+    def test_repr_string(self):
+        """"Test the _repr_ method"""
 
+        customer = Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893")
+        customer.create()
+        resp_string = repr(customer)
+        test_string = "<customer_id=[{}] Firstname {} Lastname {} email_id {} address {} phone_number {} card_number {}>".format(customer.customer_id, customer.firstname, customer.lastname,
+        customer.email_id, customer.address, customer.phone_number, customer.card_number)
+        self.assertEqual(resp_string,test_string)
+        
+    def test_update_fail(self):
+        """Test to see if update raises Data validation error"""
+
+        cust = CustomerFactory()
+        data = {
+            "customer_id": None,
+            "firstname": "Tom",
+            "lastname": "Steven",
+            "email_id": "123@gmail.com",
+            "address": "110 street",
+            "phone_number": "123",
+            "card_number": "456",
+        }
+
+        cust.deserialize(data)
+        cust.customer_id = None
+
+        self.assertRaises(DataValidationError, cust.update)
