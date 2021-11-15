@@ -16,3 +16,4 @@ class CustomerFactory(factory.Factory):
     address = factory.Faker("address")
     phone_number = factory.Faker("phone_number")
     card_number = factory.Faker("phone_number")
+    active = FuzzyChoice(choices=[True, False])

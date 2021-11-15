@@ -135,6 +135,45 @@ def delete_customers(customer_id):
         customer.delete()
     return make_response("", status.HTTP_204_NO_CONTENT)
 
+######################################################################
+# PATH: /customers/{user_id}/deactivate
+######################################################################
+@app.route('/customers/<int:customer_id>/deactivate',  methods = ["PUT"])
+#@app.param('customer_id', 'Customer identifier')
+def deactivate_customer(customer_id):
+    """
+    Deactivate a Customer
+    This endpoint will deactivate a Customer
+    """
+    app.logger.info('Request to deactivate customer with id: %s', customer_id)
+    customer = Customer.find(customer_id)
+    if customer == None:
+        app.abort(status.HTTP_404_NOT_FOUND, "Customer with id '{}' was not found".format(customer_id))
+
+    
+    customer.active = False
+    customer.update()
+    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+        
+
+######################################################################
+# PATH: /customers/{user_id}/activate
+######################################################################
+@app.route('/customers/<int:customer_id>/activate', methods = ["PUT"])
+#@app.param('customer_id', 'Customer identifier')
+def activate_customer(customer_id):
+    """
+    Activate a Customer
+    This endpoint will deactivate a Customer
+    """
+    app.logger.info('Request to activate customer with id: %s', customer_id)
+    customer = Customer.find(customer_id)
+    if customer == None:
+        app.abort(status.HTTP_404_NOT_FOUND, "Customer with id '{}' was not found".format(customer_id))
+    customer.active = True
+    customer.update()
+    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

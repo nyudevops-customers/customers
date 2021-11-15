@@ -51,7 +51,7 @@ class TestCustomer(unittest.TestCase):
 
     def test_create_a_customer(self):
         """ Test something """
-        customer = Customer(firstname="Tom", lastname="Steven", email_id="123@gmail.com", address="102 XYZ St, Apt 98, Tx", phone_number="200988884", card_number="48097572893")
+        customer = Customer(firstname="Tom", lastname="Steven", email_id="123@gmail.com", address="102 XYZ St, Apt 98, Tx", phone_number="200988884", card_number="48097572893", active=True)
         self.assertTrue(customer != None)
         self.assertEqual(customer.customer_id, None)
         self.assertEqual(customer.firstname, "Tom")
@@ -60,6 +60,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.address, "102 XYZ St, Apt 98, Tx")
         self.assertEqual(customer.phone_number, "200988884")
         self.assertEqual(customer.card_number, "48097572893")
+        self.assertEqual(customer.active,True)
 
 
     def test_serialize_a_customer(self):
@@ -81,6 +82,8 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(data["phone_number"], customer.phone_number)
         self.assertIn("card_number", data)
         self.assertEqual(data["card_number"], customer.card_number)
+        self.assertIn("active", data)
+        self.assertEqual(data["active"],customer.active)
 
     
     def test_deserialize_a_customer(self):
@@ -93,6 +96,7 @@ class TestCustomer(unittest.TestCase):
             "address": "102 XYZ St, Apt 98, Tx",
             "phone_number": "200988884",
             "card_number": "48097572893",
+            "active" : True
         }
         customer = Customer()
         customer.deserialize(data)
@@ -104,6 +108,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.address, "102 XYZ St, Apt 98, Tx")
         self.assertEqual(customer.phone_number, "200988884")
         self.assertEqual(customer.card_number, "48097572893")
+        self.assertEqual(customer.active,True)
 
     def test_deserialize_with_type_error(self):
         """ Deserialize a Customer with a TypeError """
@@ -141,23 +146,25 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.address, customers[1].address)
         self.assertEqual(customer.phone_number, customers[1].phone_number)
         self.assertEqual(customer.card_number, customers[1].card_number)
+        self.assertEqual(customer.active,customers[1].active)
 
 
     def test_find_by_firstname(self):
         """ Find a Customer by FirstName """
-        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893").create()
-        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893").create()
+        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=True).create()
+        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893",active=True).create()
         customers = Customer.find_by_firstname("Jane")
         self.assertEqual(customers[0].lastname,"Doe")
         self.assertEqual(customers[0].email_id,"jnd@xyz.com")
         self.assertEqual(customers[0].address,"102 XYZ St, Apt 98, Tx")
         self.assertEqual(customers[0].phone_number,"200988884")
         self.assertEqual(customers[0].card_number,"48097572893")
+        self.assertEqual(customers[0].active,True)
 
     def test_find_by_lastname(self):
         """ Find a Customer by LastName """
-        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893").create()
-        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893").create()
+        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=True).create()
+        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893",active=True).create()
         customers = Customer.find_by_lastname("Doe")
         self.assertEqual(customers[0].firstname,"John")
         self.assertEqual(customers[0].email_id,"jd@xyz.com")
@@ -169,28 +176,31 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customers[1].address,"102 XYZ St, Apt 98, Tx")
         self.assertEqual(customers[1].phone_number,"200988884")
         self.assertEqual(customers[1].card_number,"48097572893")
+        self.assertEqual(customers[1].active,True)
     
     def test_find_by_email_id(self):
         """ Find a Customer by Email ID """
-        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893").create()
-        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893").create()
+        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=True).create()
+        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893",active=True).create()
         customers = Customer.find_by_emailID("jd@xyz.com")
         self.assertEqual(customers[0].firstname,"John")
         self.assertEqual(customers[0].lastname,"Doe")
         self.assertEqual(customers[0].address,"102 Mercer St, Apt 8, NY")
         self.assertEqual(customers[0].phone_number,"200987634")
         self.assertEqual(customers[0].card_number,"489372893")
+        self.assertEqual(customers[0].active, True)
 
     def test_find_by_phone_number(self):
         """ Find a Customer by Phone Number """
-        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893").create()
-        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893").create()
+        Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=True).create()
+        Customer(firstname="Jane", lastname="Doe", email_id="jnd@xyz.com",address="102 XYZ St, Apt 98, Tx",phone_number="200988884",card_number="48097572893",active=True).create()
         customers = Customer.find_by_phone_number("200987634")
         self.assertEqual(customers[0].firstname,"John")
         self.assertEqual(customers[0].lastname,"Doe")
         self.assertEqual(customers[0].email_id,"jd@xyz.com")
         self.assertEqual(customers[0].address,"102 Mercer St, Apt 8, NY")
         self.assertEqual(customers[0].card_number,"489372893")
+        self.assertEqual(customers[0].active,True)
 
     def test_find_or_404_found(self):
         """ Find or return 404 found """
@@ -207,6 +217,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.address, customers[1].address)
         self.assertEqual(customer.phone_number, customers[1].phone_number)
         self.assertEqual(customer.card_number, customers[1].card_number)
+        self.assertEqual(customer.active,customers[1].active)
 
 
     def test_find_or_404_not_found(self):
@@ -217,7 +228,7 @@ class TestCustomer(unittest.TestCase):
     def test_update_a_customer(self):
         """Update or return 404 NOT FOUND"""
 
-        test_customer = Customer(firstname="Dev", lastname="Lincoln", email_id="dldl@xyz.com", address="22nd St. X Ave, N.Y.", phone_number="123456789", card_number="1615141312109988")
+        test_customer = Customer(firstname="Dev", lastname="Lincoln", email_id="dldl@xyz.com", address="22nd St. X Ave, N.Y.", phone_number="123456789", card_number="1615141312109988",active=True)
         test_customer.create()
 
         self.assertEqual(test_customer.customer_id, 1)
@@ -250,10 +261,10 @@ class TestCustomer(unittest.TestCase):
     def test_repr_string(self):
         """"Test the _repr_ method"""
 
-        customer = Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893")
+        customer = Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=True)
         customer.create()
         resp_string = repr(customer)
-        test_string = "<customer_id=[{}] Firstname {} Lastname {} email_id {} address {} phone_number {} card_number {}>".format(customer.customer_id, customer.firstname, customer.lastname,
+        test_string = "<customer_id=[{}] Firstname {} Lastname {} email_id {} address {} phone_number {} card_number {} >".format(customer.customer_id, customer.firstname, customer.lastname,
         customer.email_id, customer.address, customer.phone_number, customer.card_number)
         self.assertEqual(resp_string,test_string)
         
@@ -269,6 +280,7 @@ class TestCustomer(unittest.TestCase):
             "address": "102 Mercer St, Apt 8, NY",
             "phone_number": "200987634",
             "card_number": "489372893",
+            "active" : True
         }
 
         cust.deserialize(data)
