@@ -1,5 +1,7 @@
 # Customers
-Created for nyu Devops project , Fall 2021. Microservice for handling customer data for ecommerce site.
+[![Build Status](https://app.travis-ci.com/nyudevops-customers/customers.svg?branch=main)](https://app.travis-ci.com/nyudevops-customers/customers)
+
+Created for NYU Devops project, Fall 2021. Microservices built for handling customer data for an e-commerce site.
 
 ## API Routes Documentation for Customers
 
