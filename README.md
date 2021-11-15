@@ -1,5 +1,7 @@
 # Customers
 [![Build Status](https://app.travis-ci.com/nyudevops-customers/customers.svg?branch=main)](https://app.travis-ci.com/nyudevops-customers/customers)
+[![codecov](https://codecov.io/gh/nyudevops-customers/customers/branch/main/graph/badge.svg?token=K98PU5BETN)](https://codecov.io/gh/nyudevops-customers/customers)
+
 
 Created for NYU Devops project, Fall 2021. Microservices built for handling customer data for an e-commerce site.
 

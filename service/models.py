@@ -33,9 +33,10 @@ class Customer(db.Model):
     address = db.Column(db.String(63))
     phone_number = db.Column(db.String(32))
     card_number = db.Column(db.String(32), nullable=True)
+    active = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
-        return "<customer_id=[{}] Firstname {} Lastname {} email_id {} address {} phone_number {} card_number {}>".format(self.customer_id, self.firstname, self.lastname,
+        return "<customer_id=[{}] Firstname {} Lastname {} email_id {} address {} phone_number {} card_number {} >".format(self.customer_id, self.firstname, self.lastname,
         self.email_id, self.address, self.phone_number, self.card_number)
 
     def create(self):
@@ -62,7 +63,7 @@ class Customer(db.Model):
     def serialize(self):
         """ Serializes a Customer into a dictionary """
         return {"customer_id": self.customer_id, "firstname": self.firstname, "lastname": self.lastname,
-        "email_id": self.email_id, "address": self.address, "phone_number": self.phone_number,"card_number":self.card_number}
+        "email_id": self.email_id, "address": self.address, "phone_number": self.phone_number,"card_number":self.card_number,"active":self.active}
 
     def deserialize(self, data):
         """
@@ -78,6 +79,7 @@ class Customer(db.Model):
             self.phone_number = data["phone_number"]
             self.card_number = data["card_number"]
             self.email_id = data["email_id"]
+            self.active =  data["active"]
         except AttributeError as error:
             raise DataValidationError(
                 "Invalid attribute: " + error.args[0]
@@ -119,7 +121,9 @@ class Customer(db.Model):
     def find(cls, customer_id):
         """ Finds a Customer by it's customer_id """
         logger.info("Processing lookup for customer_id %s ...", customer_id)
-        return cls.query.get(customer_id)
+        active_customers = cls.query.filter(cls.customer_id == customer_id and cls.active)
+        return active_customers[0]
+
 
     @classmethod
     def find_or_404_int(cls, customer_id):
@@ -141,7 +145,7 @@ class Customer(db.Model):
             name (string): the name of the Customers you want to match
         """
         logger.info("Processing first name query for %s  ...", firstname)
-        return cls.query.filter(cls.firstname == firstname)
+        return cls.query.filter(cls.firstname == firstname and cls.active)
 
     @classmethod
     def find_by_lastname(cls, lastname):
@@ -151,7 +155,7 @@ class Customer(db.Model):
             name (string): the name of the Customers you want to match
         """
         logger.info("Processing last name query for %s  ...", lastname)
-        return cls.query.filter(cls.lastname == lastname) 
+        return cls.query.filter(cls.lastname == lastname and cls.active) 
 
     @classmethod
     def find_by_emailID(cls, email_id):
@@ -161,7 +165,7 @@ class Customer(db.Model):
             name (string): the name of the Customers you want to match
         """
         logger.info("Processing name query for %s  ...", email_id)
-        return cls.query.filter(cls.email_id == email_id) 
+        return cls.query.filter(cls.email_id == email_id and cls.active) 
         
     @classmethod
     def find_by_phone_number(cls, phone_number):
@@ -171,4 +175,4 @@ class Customer(db.Model):
             name (string): the name of the Customers you want to match
         """
         logger.info("Processing name query for %s  ...", phone_number)
-        return cls.query.filter(cls.phone_number == phone_number) 
+        return cls.query.filter(cls.phone_number == phone_number and cls.active) 
