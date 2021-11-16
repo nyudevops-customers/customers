@@ -9,6 +9,7 @@ install: "pip install -r requirements.txt"
 env:
   global:
   - DATABASE_URI='postgres://postgres:postgres@localhost:5432/postgres'
+  - CODECOV_TOKEN='f747d046-2ab5-4c8d-b22b-4703ea756fa1'
 
 # commands to run tests
 before_script: 
