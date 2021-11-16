@@ -264,8 +264,8 @@ class TestCustomer(unittest.TestCase):
         customer = Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=True)
         customer.create()
         resp_string = repr(customer)
-        test_string = "<customer_id=[{}] Firstname {} Lastname {} email_id {} address {} phone_number {} card_number {} >".format(customer.customer_id, customer.firstname, customer.lastname,
-        customer.email_id, customer.address, customer.phone_number, customer.card_number)
+        test_string = "<customer_id=[{}] Firstname {} Lastname {} email_id {} address {} phone_number {} card_number {} active {}>".format(customer.customer_id, customer.firstname, customer.lastname,
+        customer.email_id, customer.address, customer.phone_number, customer.card_number, customer.active)
         self.assertEqual(resp_string,test_string)
         
     def test_update_fail(self):
@@ -287,3 +287,21 @@ class TestCustomer(unittest.TestCase):
         cust.customer_id = None
 
         self.assertRaises(DataValidationError, cust.update)
+
+    def test_find_by_boolean(self):
+        """Test to list customers by boolean value"""
+
+        customer1 = Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=True)
+        customer2 = Customer(firstname="Sir", lastname="ABC", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=False)
+        customer3 = Customer(firstname="Madam", lastname="A", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=True)
+        customer1.create()
+        customer2.create()
+        customer3.create()
+
+        self.assertEqual(len(Customer.all()), 3)
+        all = Customer.all()
+        print(all[0])
+        result = Customer.find_by_boolean(True)
+        print(result)
+        self.assertEqual(len(Customer.find_by_boolean(True)), 2)
+        self.assertEqual(len(Customer.find_by_boolean(False)), 1)

@@ -31,7 +31,9 @@ def index():
     )
 
 
-
+######################################################################
+# LIST CUSTOMERS
+######################################################################
 @app.route("/customers", methods=["GET"])
 def get_customers_by_values():
     """
@@ -42,29 +44,40 @@ def get_customers_by_values():
 
     if "email_id" in args:
         app.logger.info("Request for Customer with id: %s", ["email_id"])
-        customer = Customer.find_by_emailID(args["email_id"]).first()
-        return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+        customer = Customer.find_by_emailID(args["email_id"])
+        customer_list = [x.serialize() for x in customer]
+        return make_response(jsonify(customer_list), status.HTTP_200_OK)
     
     elif "firstname" in args:
         app.logger.info("Request for Customer with firstname: %s", args["firstname"])
-        customer = Customer.find_by_firstname(args["firstname"]).first()
-        return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+        customer = Customer.find_by_firstname(args["firstname"])
+        customer_list = [x.serialize() for x in customer]
+        return make_response(jsonify(customer_list), status.HTTP_200_OK)
         
     elif "lastname" in args:
         app.logger.info("Request for Customer with lastname: %s", args["lastname"])
-        customer = Customer.find_by_lastname(args["lastname"]).first()
-        return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+        customer = Customer.find_by_lastname(args["lastname"])
+        customer_list = [x.serialize() for x in customer]
+        return make_response(jsonify(customer_list), status.HTTP_200_OK)
     
     elif "phone_number" in args:
         app.logger.info("Request for Customer with phone_number: %s", args["phone_number"])
-        customer = Customer.find_by_phone_number(args["phone_number"]).first()
-        return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
-    
+        customer = Customer.find_by_phone_number(args["phone_number"])
+        customer_list = [x.serialize() for x in customer]
+        return make_response(jsonify(customer_list), status.HTTP_200_OK)
+    elif "active" in args:
+        app.logger.info("Request for Customer with phone_number: %s", args["active"])
+        customer = Customer.find_by_boolean(args["active"])
+        customer_list = [x.serialize() for x in customer]
+        return make_response(jsonify(customer_list), status.HTTP_200_OK)
+
     else:
         app.logger.info("Request for all customers")
         customer = Customer.all()
         customer_list = [x.serialize() for x in customer]
         return make_response(jsonify(customer_list), status.HTTP_200_OK)
+
+
 
 @app.route("/customers/<int:customer_id>", methods=["GET"])
 def get_customers_byid(customer_id):

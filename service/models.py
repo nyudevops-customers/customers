@@ -36,8 +36,8 @@ class Customer(db.Model):
     active = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
-        return "<customer_id=[{}] Firstname {} Lastname {} email_id {} address {} phone_number {} card_number {} >".format(self.customer_id, self.firstname, self.lastname,
-        self.email_id, self.address, self.phone_number, self.card_number)
+        return "<customer_id=[{}] Firstname {} Lastname {} email_id {} address {} phone_number {} card_number {} active {}>".format(self.customer_id, self.firstname, self.lastname,
+        self.email_id, self.address, self.phone_number, self.card_number, self.active)
 
     def create(self):
         """
@@ -145,7 +145,7 @@ class Customer(db.Model):
             name (string): the name of the Customers you want to match
         """
         logger.info("Processing first name query for %s  ...", firstname)
-        return cls.query.filter(cls.firstname == firstname and cls.active)
+        return cls.query.filter(cls.firstname == firstname and cls.active).all()
 
     @classmethod
     def find_by_lastname(cls, lastname):
@@ -155,7 +155,7 @@ class Customer(db.Model):
             name (string): the name of the Customers you want to match
         """
         logger.info("Processing last name query for %s  ...", lastname)
-        return cls.query.filter(cls.lastname == lastname and cls.active) 
+        return cls.query.filter(cls.lastname == lastname and cls.active).all()
 
     @classmethod
     def find_by_emailID(cls, email_id):
@@ -165,7 +165,7 @@ class Customer(db.Model):
             name (string): the name of the Customers you want to match
         """
         logger.info("Processing name query for %s  ...", email_id)
-        return cls.query.filter(cls.email_id == email_id and cls.active) 
+        return cls.query.filter(cls.email_id == email_id and cls.active).all()
         
     @classmethod
     def find_by_phone_number(cls, phone_number):
@@ -175,4 +175,15 @@ class Customer(db.Model):
             name (string): the name of the Customers you want to match
         """
         logger.info("Processing name query for %s  ...", phone_number)
-        return cls.query.filter(cls.phone_number == phone_number and cls.active) 
+        return cls.query.filter(cls.phone_number == phone_number and cls.active).all()
+
+    @classmethod
+    def find_by_boolean(cls, active):
+        """Returns all Customers with the given active status
+
+        Args:
+            active (boolena): the status of the list of customers
+        """
+
+        logger.info("Processing boolena query for {}".format(active))
+        return cls.query.filter(cls.active == active).all()

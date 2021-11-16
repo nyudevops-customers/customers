@@ -11,6 +11,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
 from flask.json import jsonify
+from werkzeug import test
 from werkzeug.datastructures import ContentRange
 from service import status  # HTTP Status Codes
 from service.models import Customer, db
@@ -174,12 +175,13 @@ class TestCustomerServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["customer_id"], test_customer.customer_id)
-        self.assertEqual(data["firstname"], test_customer.firstname)
-        self.assertEqual(data["lastname"], test_customer.lastname)
-        self.assertEqual(data["address"], test_customer.address)
-        self.assertEqual(data["phone_number"], test_customer.phone_number)
-        self.assertEqual(data["card_number"], test_customer.card_number)
+        print(data)
+        self.assertEqual(data[0]["customer_id"], test_customer.customer_id)
+        self.assertEqual(data[0]["firstname"], test_customer.firstname)
+        self.assertEqual(data[0]["lastname"], test_customer.lastname)
+        self.assertEqual(data[0]["address"], test_customer.address)
+        self.assertEqual(data[0]["phone_number"], test_customer.phone_number)
+        self.assertEqual(data[0]["card_number"], test_customer.card_number)
 
     def test_get_customer_by_firstname(self):
         """ Get a single Customer firstname"""
@@ -190,12 +192,12 @@ class TestCustomerServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["customer_id"], test_customer.customer_id)
-        self.assertEqual(data["email_id"], test_customer.email_id)
-        self.assertEqual(data["lastname"], test_customer.lastname)
-        self.assertEqual(data["address"], test_customer.address)
-        self.assertEqual(data["phone_number"], test_customer.phone_number)
-        self.assertEqual(data["card_number"], test_customer.card_number)
+        self.assertEqual(data[0]["customer_id"], test_customer.customer_id)
+        self.assertEqual(data[0]["email_id"], test_customer.email_id)
+        self.assertEqual(data[0]["lastname"], test_customer.lastname)
+        self.assertEqual(data[0]["address"], test_customer.address)
+        self.assertEqual(data[0]["phone_number"], test_customer.phone_number)
+        self.assertEqual(data[0]["card_number"], test_customer.card_number)
 
     def test_get_customer_by_lastname(self):
         """ Get a single Customer lastname"""
@@ -206,12 +208,12 @@ class TestCustomerServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["customer_id"], test_customer.customer_id)
-        self.assertEqual(data["firstname"], test_customer.firstname)
-        self.assertEqual(data["email_id"], test_customer.email_id)
-        self.assertEqual(data["address"], test_customer.address)
-        self.assertEqual(data["phone_number"], test_customer.phone_number)
-        self.assertEqual(data["card_number"], test_customer.card_number)
+        self.assertEqual(data[0]["customer_id"], test_customer.customer_id)
+        self.assertEqual(data[0]["firstname"], test_customer.firstname)
+        self.assertEqual(data[0]["email_id"], test_customer.email_id)
+        self.assertEqual(data[0]["address"], test_customer.address)
+        self.assertEqual(data[0]["phone_number"], test_customer.phone_number)
+        self.assertEqual(data[0]["card_number"], test_customer.card_number)
     
 
     def test_get_customer_by_phone_number(self):
@@ -223,13 +225,43 @@ class TestCustomerServer(TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["customer_id"], test_customer.customer_id)
-        self.assertEqual(data["firstname"], test_customer.firstname)
-        self.assertEqual(data["lastname"], test_customer.lastname)
-        self.assertEqual(data["address"], test_customer.address)
-        self.assertEqual(data["email_id"], test_customer.email_id)
-        self.assertEqual(data["card_number"], test_customer.card_number)
+        self.assertEqual(data[0]["customer_id"], test_customer.customer_id)
+        self.assertEqual(data[0]["firstname"], test_customer.firstname)
+        self.assertEqual(data[0]["lastname"], test_customer.lastname)
+        self.assertEqual(data[0]["address"], test_customer.address)
+        self.assertEqual(data[0]["email_id"], test_customer.email_id)
+        self.assertEqual(data[0]["card_number"], test_customer.card_number)
     
+    def test_get_customer_by_active(self):
+        """ Get a customers by their active status"""
+        # get the id of a customer
+        customer1 = Customer(firstname="John", lastname="Doe", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=True)
+        customer2 = Customer(firstname="Sir", lastname="ABC", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=False)
+        customer3 = Customer(firstname="Madam", lastname="A", email_id="jd@xyz.com",address="102 Mercer St, Apt 8, NY",phone_number="200987634",card_number="489372893",active=True)
+        resp = self.app.post(
+            BASE_URL, json=customer1.serialize(), content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(
+                resp.status_code, status.HTTP_201_CREATED, "Could not create test customer"
+            )
+        resp = self.app.post(
+            BASE_URL, json=customer2.serialize(), content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(
+                resp.status_code, status.HTTP_201_CREATED, "Could not create test customer"
+            )
+        resp = self.app.post(
+            BASE_URL, json=customer3.serialize(), content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(
+                resp.status_code, status.HTTP_201_CREATED, "Could not create test customer"
+            )
+        
+        
+        resp = self.app.get(
+            "{0}?active={1}".format(BASE_URL, True), content_type="application/json"
+        )
+        
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 2)
 
 
     def test_get_customer_not_found(self):
