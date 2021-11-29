@@ -1,0 +1,19 @@
+---
+# This manifest deploys a Python Flask application with a PostgresSQL database
+applications:
+- name: nyu-customer-service-f2103
+  path: .
+  instances: 1
+  memory: 512M
+  routes:
+  - route: nyu-customer-service-fall2103.us-south.cf.appdomain.cloud
+  disk_quota: 1024M
+  buildpacks: 
+  - python_buildpack
+  timeout: 180
+  services:
+  - ElephantSQL
+  env:
+    FLASK_APP : service:app
+    FLASK_DEBUG : false
+
