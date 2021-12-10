@@ -17,6 +17,10 @@ class DataValidationError(Exception):
 
     pass
 
+class DatabaseConnectionError(Exception):
+    """Custom Exception when database connection fails"""
+
+    pass
 
 class Customer(db.Model):
     """

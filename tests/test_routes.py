@@ -24,14 +24,14 @@ logging.disable(logging.CRITICAL)
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")  
-BASE_URL = "/customers"
+BASE_URL = "/api/customers"
 CONTENT_TYPE_JSON = "application/json"
 
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
 class TestCustomerServer(TestCase):
-    """ REST API Server Tests """
+    """ REST API Server Tests """ 
 
     @classmethod
     def setUpClass(cls):
@@ -155,7 +155,7 @@ class TestCustomerServer(TestCase):
         # get the id of a customer
         test_customer = self._create_customers(1)[0]
         resp = self.app.get(
-            "{0}/{1}".format(BASE_URL, test_customer.customer_id), content_type="application/json"
+            "{0}/{1}".format("/customers", test_customer.customer_id), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -171,7 +171,7 @@ class TestCustomerServer(TestCase):
         # get the id of a customer
         test_customer = self._create_customers(1)[0]
         resp = self.app.get(
-            "{0}?email_id={1}".format(BASE_URL, test_customer.email_id), content_type="application/json"
+            "{0}?email_id={1}".format(BASE_URL,test_customer.email_id), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -293,7 +293,7 @@ class TestCustomerServer(TestCase):
         """ Delete a Customer """
         test_customer = self._create_customers(1)[0]
         resp = self.app.delete(
-            "{0}/{1}".format(BASE_URL, test_customer.customer_id), content_type="application/json"
+            "{0}/{1}".format("/customers", test_customer.customer_id), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(resp.data), 0)
