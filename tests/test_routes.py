@@ -307,7 +307,7 @@ class TestCustomerServer(TestCase):
         """ Deactivate an existing Customer """
         test_customer = self._create_customers(1)[0]
         resp = self.app.put(
-            "/customers/{0}/deactivate".format(test_customer.customer_id)
+            "/api/customers/{0}/deactivate".format(test_customer.customer_id)
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(resp.get_json()['active'], False)
@@ -318,13 +318,13 @@ class TestCustomerServer(TestCase):
         test_customer = self._create_customers(1)[0]
         #deactivate a customer
         resp = self.app.put(
-            "/customers/{0}/deactivate".format(test_customer.customer_id)
+            "/api/customers/{0}/deactivate".format(test_customer.customer_id)
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(resp.get_json()['active'], False)
         # activate the customer
         resp_activate = self.app.put(
-            "/customers/{0}/activate".format(test_customer.customer_id)
+            "/api/customers/{0}/activate".format(test_customer.customer_id)
         )
         self.assertEqual(resp_activate.status_code, status.HTTP_200_OK)
         self.assertEqual(resp_activate.get_json()['active'], True)
