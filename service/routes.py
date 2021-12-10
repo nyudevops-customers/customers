@@ -96,24 +96,24 @@ def request_validation_error(error):
         'message': message
     }, status.HTTP_400_BAD_REQUEST
 
-@api.errorhandler(DatabaseConnectionError)
-def database_connection_error(error):
-    """ Handles Database Errors from connection attempts """
-    message = str(error)
-    app.logger.critical(message)
-    return {
-        'status_code': status.HTTP_503_SERVICE_UNAVAILABLE,
-        'error': 'Service Unavailable',
-        'message': message
-    }, status.HTTP_503_SERVICE_UNAVAILABLE
+# @api.errorhandler(DatabaseConnectionError)
+# def database_connection_error(error):
+#     """ Handles Database Errors from connection attempts """
+#     message = str(error)
+#     app.logger.critical(message)
+#     return {
+#         'status_code': status.HTTP_503_SERVICE_UNAVAILABLE,
+#         'error': 'Service Unavailable',
+#         'message': message
+#     }, status.HTTP_503_SERVICE_UNAVAILABLE
 
 
 ######################################################################
 # Function to generate a random API key (good for testing)
 ######################################################################
-def generate_apikey():
-    """ Helper function used when testing API keys """
-    return secrets.token_hex(16)
+# def generate_apikey():
+#     """ Helper function used when testing API keys """
+#     return secrets.token_hex(16)
 
 
 
@@ -194,79 +194,123 @@ class CustomerCollection(Resource):
         customer.deserialize(api.payload)
         customer.create()
         message = customer.serialize()
-        location_url = url_for("get_customers_byid", customer_id=customer.customer_id, _external=True)
-
+        location_url = api.url_for(CustomerResource, customer_id=customer.customer_id, _external=True)
         app.logger.info("Customer with ID [%s] created.", customer.customer_id)
         return message, status.HTTP_201_CREATED, {"Location": location_url}
 
 
 
 
-@app.route("/customers/<int:customer_id>", methods=["GET"])
-def get_customers_byid(customer_id):
-    """
-    Retrieve a single Customer
-    This endpoint will return a Customer based on it's id
-    """
-    app.logger.info("Request for Customer with id: %s", customer_id)
-    customer = Customer.find_or_404_int(customer_id)
-    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
-    
+# @app.route("/customers/<int:customer_id>", methods=["GET"])
+# def get_customers_byid(customer_id):
+#     """
+#     Retrieve a single Customer
+#     This endpoint will return a Customer based on it's id
+#     """
+#     app.logger.info("Request for Customer with id: %s", customer_id)
+#     customer = Customer.find_or_404_int(customer_id)
+#     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
 
-# @app.route("/customers", methods=["POST"])
-# def create_customers():
-#     """
-#     Creates a Customer
-#     This endpoint will create a Customer based the data in the body that is posted
-#     """
-#     app.logger.info("Request to create a customer")
+######################################################################
+# PATH /customers/{user_id}
+######################################################################
+@api.route('/customers/<customer_id>')
+@api.param('customer_id', 'The Customer identifier')
+class CustomerResource(Resource):
+    """
+    CustomerResource class
+    Allows the manipulation of a single Customer
+    GET /customer{id} - Returns a Customer with the id
+    PUT /customer{id} - Update a Customer with the id
+    DELETE /customer{id} -  Deletes a Customer with the id
+    """
+    #------------------------------------------------------------------
+    # RETRIEVE A CUSTOMER
+    #------------------------------------------------------------------
+    @api.doc('get_customers')
+    @api.response(404, 'Customer not found')
+    @api.marshal_with(customer_model)
+    def get(self, customer_id):
+        """
+        Retrieve a single customer
+        This endpoint will return a Customer based on user_id
+        """
+        app.logger.info("Request for Customer with id: %s", customer_id)
+        customer = Customer.find_or_404_int(customer_id)
+        return customer.serialize(), status.HTTP_200_OK
+
+    #------------------------------------------------------------------
+    # UPDATE AN EXISTING CUSTOMER
+    #------------------------------------------------------------------
+
+    @api.doc('update_customers')
+    @api.response(404, 'Customer not found')
+    @api.response(400, 'The posted Customer data was not valid')
+    @api.expect(customer_model)
+    @api.marshal_with(customer_model)
+    def put(self, customer_id):
+        """
+        Update a Customer
+        This endpoint will update a Customer based the body that is posted
+        """
+        app.logger.info("Requesting to update a customer")
+        check_content_type("application/json")
+        customer = Customer.find_or_404_int(customer_id)
+        customer.deserialize(api.payload)
+        customer.customer_id = customer_id
+        customer.update()
+        app.logger.info("Updated customer with id %s", customer.customer_id)
+        return customer.serialize(), status.HTTP_200_OK
+    
+    #------------------------------------------------------------------
+    # DELETE A CUSTOMER
+    #------------------------------------------------------------------
+    @api.doc('delete_customers')
+    @api.response(204, 'Customer deleted')
+    def delete(self, customer_id):          
+        """
+        Delete a Customer
+        This endpoint will delete a Customer based the id specified in the path
+        """
+        app.logger.info("Request to delete pet with id: %s", customer_id)
+        customer = Customer.find(customer_id)
+        if customer:
+            customer.delete()
+        return "", status.HTTP_204_NO_CONTENT
+
+
+# #######################
+# # UPDATE Customer
+# ####################### 
+# @app.route("/customers/<int:customer_id>", methods = ["PUT"])
+# def update_customers(customer_id):
+
+#     app.logger.info("Requesting to update a customer")
 #     check_content_type("application/json")
-#     customer = Customer()
-#     customer.deserialize(request.get_json())
-#     customer.create()
-#     message = customer.serialize()
-#     location_url = url_for("get_customers_byid", customer_id=customer.customer_id, _external=True)
-
-#     app.logger.info("Customer with ID [%s] created.", customer.customer_id)
-#     return make_response(
-#         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
-#     )
-
-
-
-
-#######################
-# UPDATE Customer
-####################### 
-@app.route("/customers/<int:customer_id>", methods = ["PUT"])
-def update_customers(customer_id):
-
-    app.logger.info("Requesting to update a customer")
-    check_content_type("application/json")
-    customer = Customer.find_or_404_int(customer_id)
+#     customer = Customer.find_or_404_int(customer_id)
     
-    customer.deserialize(request.get_json())
-    customer.customer_id = customer_id
-    customer.update()
-    app.logger.info("Updated customer with id %s", customer.customer_id)
-    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+#     customer.deserialize(request.get_json())
+#     customer.customer_id = customer_id
+#     customer.update()
+#     app.logger.info("Updated customer with id %s", customer.customer_id)
+#     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+ 
 
+# ######################################################################
+# # DELETE A CUSTOMER
+# ######################################################################
+# @app.route("/customers/<int:customer_id>", methods=["DELETE"])
+# def delete_customers(customer_id):
+#     """
+#     Delete a Customer
 
-######################################################################
-# DELETE A CUSTOMER
-######################################################################
-@app.route("/customers/<int:customer_id>", methods=["DELETE"])
-def delete_customers(customer_id):
-    """
-    Delete a Customer
-
-    This endpoint will delete a Customer based on the id specified in the path
-    """
-    app.logger.info("Request to delete pet with id: %s", customer_id)
-    customer = Customer.find(customer_id)
-    if customer:
-        customer.delete()
-    return make_response("", status.HTTP_204_NO_CONTENT)
+#     This endpoint will delete a Customer based on the id specified in the path
+#     """
+#     app.logger.info("Request to delete pet with id: %s", customer_id)
+#     customer = Customer.find(customer_id)
+#     if customer:
+#         customer.delete()
+#     return make_response("", status.HTTP_204_NO_CONTENT)
 
 ######################################################################
 # PATH: /customers/{user_id}/deactivate
@@ -282,8 +326,6 @@ def deactivate_customer(customer_id):
     customer = Customer.find(customer_id)
     if customer == None:
         app.abort(status.HTTP_404_NOT_FOUND, "Customer with id '{}' was not found".format(customer_id))
-
-    
     customer.active = False
     customer.update()
     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
