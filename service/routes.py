@@ -43,8 +43,8 @@ api = Api(app,
           description='This is a Customer server',
           default='customers',
           default_label='Customer operations',
-          doc='/apidocs', # default also could use doc='/apidocs/'
-          prefix='/api'
+          doc='/apidocs' # default also could use doc='/apidocs/'
+          #prefix='/api'
          )
 
 # Define the model so that the docs reflect what can be sent
@@ -124,7 +124,7 @@ def request_validation_error(error):
 class CustomerCollection(Resource):
     """ Handles all interactions with collections of Customers """
     #------------------------------------------------------------------
-    # LIST ALL PETS
+    # LIST ALL CUSTOMERS
     #------------------------------------------------------------------
     @api.doc('list_customers')
     @api.expect(customer_args, validate=True)
@@ -134,7 +134,7 @@ class CustomerCollection(Resource):
         """
         Retrieve a single Customer with the requested values
         """
-        app.logger.info('Request to list Pets...')
+        app.logger.info('Request to list Customers...')
         args = customer_args.parse_args()
 
         if args['email_id']:
@@ -272,7 +272,7 @@ class CustomerResource(Resource):
         Delete a Customer
         This endpoint will delete a Customer based the id specified in the path
         """
-        app.logger.info("Request to delete pet with id: %s", customer_id)
+        app.logger.info("Request to delete customer with id: %s", customer_id)
         customer = Customer.find(customer_id)
         if customer:
             customer.delete()
@@ -306,7 +306,7 @@ class CustomerResource(Resource):
 
 #     This endpoint will delete a Customer based on the id specified in the path
 #     """
-#     app.logger.info("Request to delete pet with id: %s", customer_id)
+#     app.logger.info("Request to delete customer with id: %s", customer_id)
 #     customer = Customer.find(customer_id)
 #     if customer:
 #         customer.delete()

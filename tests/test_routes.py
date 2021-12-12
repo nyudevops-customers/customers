@@ -24,7 +24,7 @@ logging.disable(logging.CRITICAL)
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres")  
-BASE_URL = "/api/customers"
+BASE_URL = "/customers"
 CONTENT_TYPE_JSON = "application/json"
 
 ######################################################################
@@ -282,7 +282,7 @@ class TestCustomerServer(TestCase):
         new_customer = resp.get_json()
         new_customer["phone_number"] = "5555511111"
 
-        resp = self.app.put("/api/customers/{}".format(new_customer["customer_id"]), json = new_customer, content_type = CONTENT_TYPE_JSON)
+        resp = self.app.put("/customers/{}".format(new_customer["customer_id"]), json = new_customer, content_type = CONTENT_TYPE_JSON)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
         updated_customer  = resp.get_json()
@@ -307,7 +307,7 @@ class TestCustomerServer(TestCase):
         """ Deactivate an existing Customer """
         test_customer = self._create_customers(1)[0]
         resp = self.app.put(
-            "/api/customers/{0}/deactivate".format(test_customer.customer_id)
+            "/customers/{0}/deactivate".format(test_customer.customer_id)
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(resp.get_json()['active'], False)
@@ -318,13 +318,13 @@ class TestCustomerServer(TestCase):
         test_customer = self._create_customers(1)[0]
         #deactivate a customer
         resp = self.app.put(
-            "/api/customers/{0}/deactivate".format(test_customer.customer_id)
+            "/customers/{0}/deactivate".format(test_customer.customer_id)
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(resp.get_json()['active'], False)
         # activate the customer
         resp_activate = self.app.put(
-            "/api/customers/{0}/activate".format(test_customer.customer_id)
+            "/customers/{0}/activate".format(test_customer.customer_id)
         )
         self.assertEqual(resp_activate.status_code, status.HTTP_200_OK)
         self.assertEqual(resp_activate.get_json()['active'], True)
