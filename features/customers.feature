@@ -53,37 +53,37 @@ Scenario: Create a Customer
 #     And I should see "Betty" in the results
 
 
-# Scenario: Query customers by first name
-#     When I visit the "Home Page"
-#     And I set the "firstname" to "Bill"
-#     And I press the "Search" button
-#     Then I should see "Bill" in the results
-#     And I should not see "Betty" in the results
-#     And I should not see "Alice" in the results
+Scenario: Query customers by first name
+    When I visit the "Home Page"
+    And I set the "firstname" to "Bill"
+    And I press the "Search" button
+    Then I should see "Bill" in the results
+    And I should not see "Betty" in the results
+    And I should not see "Alice" in the results
     
-# Scenario: Query customers by last name
-#     When I visit the "Home Page"
-#     And I set the "lastname" to "Green"
-#     And I press the "Search" button
-#     Then I should see "Green" in the results  
-#     And I should not see "Williams" in the results
-#     And I should not see "Brown" in the results
+Scenario: Query customers by last name
+    When I visit the "Home Page"
+    And I set the "lastname" to "Green"
+    And I press the "Search" button
+    Then I should see "Green" in the results  
+    And I should not see "Williams" in the results
+    And I should not see "Brown" in the results
 
 
-# Scenario: Query customers by email_id
-#     When I visit the "Home Page"
-#     And I set the "email_id" to "bw34@gmail.com"
-#     And I press the "Search" button
-#     Then I should see "bw34@gmail.com" in the "email_id" field
-#     And I should see "Betty" in the "firstname" field
-#     And I should see "Williams" in the "lastname" field
-#     And I should not see "bg12@gmail.com" in the results
+Scenario: Query customers by email_id
+    When I visit the "Home Page"
+    And I set the "email_id" to "bw34@gmail.com"
+    And I press the "Search" button
+    Then I should see "bw34@gmail.com" in the "email_id" field
+    And I should see "Betty" in the "firstname" field
+    And I should see "Williams" in the "lastname" field
+    And I should not see "bg12@gmail.com" in the results
 
-# Scenario: Query customers by active status
-#     When I visit the "Home Page"
-#     And I select "True" in the "active" dropdown
-#     And I press the "Search" button
-#     Then I should see all customers with "true" in the results
+Scenario: Query customers by active status
+    When I visit the "Home Page"
+    And I select "True" in the "active" dropdown
+    And I press the "Search" button
+    Then I should see all customers with "true" in the results
    
 # Scenario: Update a Customer
 #     When I visit the "Home Page"
