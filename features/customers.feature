@@ -46,13 +46,12 @@ Scenario: Create a Customer
     Then I should see "48097572893" in the "card_number" field
     Then I should see "True" in the "active" dropdown
 
-# Scenario: List all Customers
-#     When I visit the "Home Page"
-#     And I press the "Search" button
-#     Then I should see "Bill" in the results
-#     And I should see "Betty" in the results
-#     And I should see "Alice" in the results
-
+Scenario: List all Active Customers
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "Bill" in the results
+    And I should see "Betty" in the results
+    And I should not see "Alice" in the results
 
 Scenario: Query customers by first name
     When I visit the "Home Page"
@@ -105,9 +104,6 @@ Scenario: Update a Customer
     When I press the "Clear" button
     And I set the "firstname" to "Bill"
     And I press the "Search" button
-    #And I should see "Bill" in the "firstname" field
-    #And I should see "Green" in the "lastname" field
-    #And I should see "bg12@gmail.com" in the "email_id" field
     Then I should see "140 Apt" in the "address" field
     And I should not see "130 Rriver Drive" in the results
     
