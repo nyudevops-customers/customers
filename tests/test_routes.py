@@ -10,6 +10,8 @@ import logging
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 import json
+from urllib.parse import quote_plus
+
 
 
 from flask.json import jsonify
@@ -228,11 +230,14 @@ class TestCustomerServer(TestCase):
         """ Get a single Customer phone number"""
         # get the id of a customer
         test_customer = self._create_customers(1)[0]
+        logging.debug(test_customer)
+
         resp = self.app.get(
-            "{0}?phone_number={1}".format(BASE_URL, test_customer.phone_number), content_type="application/json"
+            "{0}?phone_number={1}".format(BASE_URL, quote_plus(test_customer.phone_number)), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
+        logging.debug(data)
         self.assertEqual(data[0]["customer_id"], test_customer.customer_id)
         self.assertEqual(data[0]["firstname"], test_customer.firstname)
         self.assertEqual(data[0]["lastname"], test_customer.lastname)

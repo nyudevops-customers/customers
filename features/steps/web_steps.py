@@ -33,7 +33,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions
 
-from service.error_handlers import not_found
+#from service.error_handlers import not_found
 
 WAIT_SECONDS = int(getenv('WAIT_SECONDS', '100'))
 ID_PREFIX = 'customer_'
@@ -139,6 +139,8 @@ def step_impl(context, text_string, element_name):
             (By.ID, element_id),
             text_string
         )
+
+        #text_not_to_be_present check syntax line 138
     )
     expect(found).to_be(True)
 
