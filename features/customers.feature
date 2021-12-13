@@ -46,12 +46,12 @@ Scenario: Create a Customer
     Then I should see "48097572893" in the "card_number" field
     Then I should see "True" in the "active" dropdown
 
-# Scenario: List all Customers
-#     When I visit the "Home Page"
-#     And I press the "Search" button
-#     Then I should see "Bill" in the results
-#     And I should see "Betty" in the results
-#     And I should see "Alice" in the results
+Scenario: List all Active Customers
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "Bill" in the results
+    And I should see "Betty" in the results
+    And I should not see "Alice" in the results
 
 
 Scenario: Query customers by first name
@@ -116,7 +116,6 @@ Scenario: Delete a Customer
     And I paste the "customer_id" field
     And I press the "Delete" button
     Then I should see the message "Success"
-    And I should not see "Server error!" in the results
     
    
 Scenario: Activate a Customer
