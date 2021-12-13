@@ -5,6 +5,8 @@ Test cases for Customer Model
 import logging
 import unittest
 import os
+import json
+
 
 from werkzeug.exceptions import NotFound
 from service.models import Customer, DataValidationError, db
