@@ -105,9 +105,6 @@ Scenario: Update a Customer
     When I press the "Clear" button
     And I set the "firstname" to "Bill"
     And I press the "Search" button
-    #And I should see "Bill" in the "firstname" field
-    #And I should see "Green" in the "lastname" field
-    #And I should see "bg12@gmail.com" in the "email_id" field
     Then I should see "140 Apt" in the "address" field
     And I should not see "130 Rriver Drive" in the results
     
