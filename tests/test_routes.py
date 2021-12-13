@@ -9,6 +9,8 @@ import os
 import logging
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
+import json
+
 
 from flask.json import jsonify
 from werkzeug import test
