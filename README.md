@@ -13,4 +13,5 @@ Created for NYU Devops project, Fall 2021. Microservices built for handling cust
 | `POST` | `/customers` | Creates a new Customer record in the database | Customer Object
 | `PUT` | `/customers/{customer_id}` | Updates/Modify a Customer record in the database | Customer Object
 | `DELETE` | `/customers/{customer_id}` | Delete the Customer with the given id number | 204 Status Code
-
+| `PUT` | `/customers/{customer_id}/deactivate` | Deactivate the Customer with the given id number | Customer Object
+| `PUT` | `/customers/{customer_id}/activate` | Activate the Customer with the given id number | Customer Object
