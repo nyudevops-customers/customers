@@ -103,4 +103,4 @@ ENV/
 # Rope project settings
 .ropeproject
 
-.bluemix/
+.bluemix/*
